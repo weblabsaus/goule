@@ -5,26 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AnonSocial</title>
     <link rel="stylesheet" href="styles.css">
+    <!-- Include jQuery and Papa Parse -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
     <script>
         $(document).ready(function() {
-            $.get('https://docs.google.com/spreadsheets/d/1Fbd-9UCGYKVuA2usd9JiPBXRq4L6CaT0__Cj_8uZFw8/pub?output=csv', function(data) {
-                const posts = $.csv.toObjects(data);
-                let postsHTML = '';
-                posts.forEach(post => {
-                    postsHTML += `<div class="post">
-                                    <div class="vote">
-                                        <button class="upvote">⬆️</button>
-                                        <button class="downvote">⬇️</button>
-                                    </div>
-                                    <div class="content">
-                                        <h2>${post.Title}</h2>
-                                        <p>${post.Content}</p>
-                                        <p><small>Posted by Anonymous</small></p>
-                                    </div>
-                                  </div>`;
-                });
-                $('#posts').html(postsHTML);
+            // Fetch and parse the CSV data
+            Papa.parse('https://docs.google.com/spreadsheets/d/1Fbd-9UCGYKVuA2usd9JiPBXRq4L6CaT0__Cj_8uZFw8/pub?output=csv', {
+                download: true,
+                header: true,
+                complete: function(results) {
+                    const posts = results.data; // Parsed data
+                    let postsHTML = '';
+                    posts.forEach(post => {
+                        postsHTML += `<div class="post">
+                                        <div class="vote">
+                                            <button class="upvote">⬆️</button>
+                                            <button class="downvote">⬇️</button>
+                                        </div>
+                                        <div class="content">
+                                            <h2>${post.Title}</h2>
+                                            <p>${post.Content}</p>
+                                            <p><small>Posted by Anonymous</small></p>
+                                        </div>
+                                      </div>`;
+                    });
+                    $('#posts').html(postsHTML); // Append posts to the container
+                }
             });
         });
     </script>
