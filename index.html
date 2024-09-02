@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Website</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+        }
+        .container {
+            width: 80%;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .post {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .post img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-right: 15px;
+        }
+        .post-content {
+            display: flex;
+            align-items: center;
+        }
+        .post-content div {
+            margin-left: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Social Media Feed</h1>
+        <div id="posts"></div>
+    </div>
+
+    <script>
+        async function fetchPosts() {
+            const response = await fetch('https://docs.google.com/spreadsheets/d/1Fbd-9UCGYKVuA2usd9JiPBXRq4L6CaT0__Cj_8uZFw8/pub?output=csv');
+            const data = await response.text();
+            return data;
+        }
+
+        function parseCSV(csv) {
+            const lines = csv.split('\n');
+            const headers = lines[0].split(',');
+            const posts = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const cells = lines[i].split(',');
+                if (cells.length === headers.length) {
+                    let post = {};
+                    for (let j = 0; j < headers.length; j++) {
+                        post[headers[j]] = cells[j];
+                    }
+                    posts.push(post);
+                }
+            }
+
+            return posts;
+        }
+
+        function displayPosts(posts) {
+            const postsContainer = document.getElementById('posts');
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('post');
+                postElement.innerHTML = `
+                    <div class="post-content">
+                        <img src="${post['Profile Image URL']}" alt="${post['Author Name']}">
+                        <div>
+                            <h3>${post['Author Name']}</h3>
+                            <p>${post['Post Content']}</p>
+                            <p><strong>${post['Timestamp']}</strong></p>
+                        </div>
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        }
+
+        async function init() {
+            const csv = await fetchPosts();
+            const posts = parseCSV(csv);
+            displayPosts(posts);
+        }
+
+        init();
+    </script>
+</body>
+</html>
