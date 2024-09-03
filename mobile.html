@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wompsocial - Mobile</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f8f9fa;
+            color: #343a40;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            text-align: center;
+        }
+        header {
+            margin-bottom: 15px;
+            padding: 10px;
+        }
+        img.logo {
+            width: 100px;
+            border-radius: 8px;
+        }
+        h1 {
+            font-weight: 500;
+            font-size: 1.5rem;
+            color: #212529;
+        }
+        .button-container {
+            margin-bottom: 15px;
+        }
+        .button {
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 3px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        .button:hover {
+            background-color: #0056b3;
+        }
+        .button:active {
+            transform: scale(0.98);
+        }
+        .item-list {
+            max-height: 500px;
+            overflow-y: auto;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 0 5%;
+            width: 90%;
+            background-color: #ffffff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            transition: transform 0.2s;
+        }
+        .item:hover {
+            transform: scale(1.02);
+        }
+        .item-details {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <img src="https://i.ibb.co/Jsvk12M/Wompsocial-logo.png" alt="wompsocial Logo" class="logo">
+        <h1>wompsocial</h1>
+        <h5>An anonymous social media that resets every day</h5>
+    </header>
+    <div class="button-container">
+        <button class="button" id="fetchDataButton">Reload</button>
+        <button class="button" id="postButton">Post</button>
+    </div>
+    <div class="item-list" id="itemList"></div>
+
+    <script>
+        // Same script as before
+        document.getElementById('fetchDataButton').addEventListener('click', function () {
+            fetchData();
+        });
+
+        document.getElementById('postButton').addEventListener('click', function () {
+            const postUrl = 'https://forms.gle/ZRhPSFnpYNh9DEkH8';
+            window.location.href = postUrl;
+        });
+
+        function fetchData() {
+            const csvUrl = 'https://docs.google.com/spreadsheets/d/1Fbd-9UCGYKVuA2usd9JiPBXRq4L6CaT0__Cj_8uZFw8/pub?output=csv';
+            fetch(csvUrl)
+                .then(response => response.text())
+                .then(data => parseCSV(data))
+                .catch(error => console.error('Error fetching the CSV:', error));
+        }
+
+        function parseCSV(csv) {
+            const rows = csv.split('\n').slice(1); // Ignore the header
+            const shuffledRows = shuffleArray(rows); // Shuffle rows
+            const itemList = document.getElementById('itemList');
+            itemList.innerHTML = ''; // Clear previous items
+
+            shuffledRows.forEach(row => {
+                const columns = row.split(',');
+
+                if (columns.length < 2) return; // Ignore rows with incomplete data
+
+                const item = document.createElement('div');
+                item.classList.add('item');
+                item.innerHTML = `
+                    <div class="item-details">
+                        <strong>Timestamp:</strong> ${columns[0]}<br>
+                        <strong>Post:</strong> ${columns[1]}
+                    </div>
+                `;
+                itemList.appendChild(item);
+            });
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        window.addEventListener('load', fetchData);
+    </script>
+</body>
+<h5>Version 1.0 - Mobile</h5>
+</html>
