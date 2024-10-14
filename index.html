@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>wompsocial</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
-    
+
     <!-- Mobile Redirect Script -->
     <script>
         // Detect mobile devices and redirect to the mobile version
@@ -13,7 +13,7 @@
             window.location.href = 'mobile.html';
         }
     </script>
-    
+
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -90,6 +90,20 @@
         .item-details strong {
             font-weight: 500;
         }
+        .post-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .post-input {
+            padding: 10px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            width: 100%;
+            max-width: 600px;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -97,8 +111,13 @@
         <img src="https://i.ibb.co/Jsvk12M/Wompsocial-logo.png" alt="wompsocial Logo" class="logo">
         <h1>wompsocial</h1>
         <h5>An anonymous social media that resets every day</h5>
-        <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSe1EJgJ1cWjByGCKN6dJvPq7ETUc0JWkTwmSBls9S4Trui5EA/viewform?embedded=true" width="640" height="451" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
     </header>
+    
+    <div class="post-form">
+        <input type="text" id="postInput" class="post-input" placeholder="Type your post here..." />
+        <button class="button" id="postButton">Post</button>
+    </div>
+    
     <div class="button-container">
         <button class="button" id="fetchDataButton">Reload</button>
     </div>
@@ -110,8 +129,32 @@
         });
 
         document.getElementById('postButton').addEventListener('click', function () {
-            const postUrl = 'https://forms.gle/ZRhPSFnpYNh9DEkH8';
-            window.location.href = postUrl;
+            const postContent = document.getElementById('postInput').value;
+            const timestamp = new Date().toISOString(); // Get current time in ISO format
+
+            // Prepare the JSON payload
+            const jsonPayload = {
+                timestamp: timestamp,
+                post: postContent
+            };
+
+            // Send the JSON payload to the webhook
+            fetch('https://sydryarpq6gm8qlo0sx5kekn.hooks.n8n.cloud/webhook/98255288-3d60-4d78-90e6-61b4465640a3', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonPayload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Clear the input field after successful post
+                document.getElementById('postInput').value = '';
+                fetchData(); // Reload the data after posting
+            })
+            .catch(error => console.error('Error sending the post:', error));
         });
 
         function fetchData() {
