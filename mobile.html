@@ -10,7 +10,7 @@
     <link rel="apple-touch-icon" href="appicon.icns">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <meta name="apple-mobile-web-app-title" content="wompsocial">
+    <meta name="apple-mobile-web-app-title" content="womp">
     
     <style>
         body {
@@ -89,6 +89,9 @@
             border-radius: 6px;
             font-size: 14px;
             display: none;
+            margin-top: 10px;
+            width: 90%;
+            max-width: 600px;
         }
     </style>
 </head>
@@ -98,19 +101,19 @@
         <h1>wompsocial</h1>
         <h5>An anonymous social media that resets every day</h5>
     </header>
-
-    <div id="installInstructions" class="install-instructions">
-        To add wompsocial to your home screen, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>.
-        <button onclick="closeInstructions()">Close</button>
-    </div>
     
     <div class="post-form">
         <input type="text" id="postInput" class="post-input" placeholder="Type your post here..." />
         <button class="button" id="postButton">Post</button>
     </div>
-    
+
     <div class="button-container">
         <button class="button" id="fetchDataButton">Reload</button>
+    </div>
+
+    <div id="installInstructions" class="install-instructions">
+        To add wompsocial to your home screen, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>.
+        <button onclick="closeInstructions()">Close</button>
     </div>
     
     <div class="item-list" id="itemList"></div>
