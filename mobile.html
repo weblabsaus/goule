@@ -3,8 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>wompsocial - Mobile</title>
+    <title>wompsocial</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- iOS Web App Configuration -->
+    <link rel="apple-touch-icon" href="appicon.icns">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="wompsocial">
+    
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -19,21 +26,20 @@
             min-height: 100vh;
             text-align: center;
         }
+        /* Responsive adjustments for mobile view */
         header {
-            margin-bottom: 15px;
-            padding: 10px;
+            margin-bottom: 20px;
         }
         img.logo {
-            width: 100px;
+            width: 120px;
             border-radius: 8px;
         }
         h1 {
             font-weight: 500;
-            font-size: 1.5rem;
             color: #212529;
         }
         .button-container {
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .button {
             padding: 10px 20px;
@@ -43,7 +49,7 @@
             border-radius: 6px;
             font-size: 16px;
             cursor: pointer;
-            margin: 3px;
+            margin: 4px;
             transition: background-color 0.3s, transform 0.2s;
         }
         .button:hover {
@@ -57,25 +63,32 @@
             overflow-y: auto;
             border-radius: 12px;
             padding: 15px;
-            margin: 0 5%;
+            margin: 0 auto;
             width: 90%;
+            max-width: 600px;
             background-color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
-        .item {
-            padding: 15px;
-            margin-bottom: 15px;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-            transition: transform 0.2s;
-        }
-        .item:hover {
-            transform: scale(1.02);
-        }
-        .item-details {
+        .post-form {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 10px;
+            margin-bottom: 15px;
+            width: 90%;
+            max-width: 600px;
+        }
+        .post-input {
+            padding: 8px;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            font-size: 16px;
+        }
+        .install-instructions {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 6px;
+            font-size: 14px;
+            display: none;
         }
     </style>
 </head>
@@ -85,21 +98,62 @@
         <h1>wompsocial</h1>
         <h5>An anonymous social media that resets every day</h5>
     </header>
-    <div class="button-container">
-        <button class="button" id="fetchDataButton">Reload</button>
+
+    <div id="installInstructions" class="install-instructions">
+        To add wompsocial to your home screen, tap <strong>Share</strong> then <strong>Add to Home Screen</strong>.
+        <button onclick="closeInstructions()">Close</button>
+    </div>
+    
+    <div class="post-form">
+        <input type="text" id="postInput" class="post-input" placeholder="Type your post here..." />
         <button class="button" id="postButton">Post</button>
     </div>
+    
+    <div class="button-container">
+        <button class="button" id="fetchDataButton">Reload</button>
+    </div>
+    
     <div class="item-list" id="itemList"></div>
 
     <script>
-        // Same script as before
-        document.getElementById('fetchDataButton').addEventListener('click', function () {
-            fetchData();
+        // Detect if added to Home Screen on iOS
+        if (window.navigator.standalone === false) {
+            document.getElementById("installInstructions").style.display = "block";
+        }
+
+        function closeInstructions() {
+            document.getElementById("installInstructions").style.display = "none";
+        }
+
+        // Functionality for post button and fetching data
+        document.getElementById('postButton').addEventListener('click', function () {
+            const postContent = document.getElementById('postInput').value;
+            const timestamp = new Date().toISOString(); // Get current time in ISO format
+
+            const jsonPayload = {
+                timestamp: timestamp,
+                post: postContent
+            };
+
+            fetch('https://cloud.activepieces.com/api/v1/webhooks/ECae0FhhT0t3ALz7gtK0z', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(jsonPayload)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                document.getElementById('postInput').value = '';
+                fetchData(); // Reload data after posting
+            })
+            .catch(error => console.error('Error sending the post:', error));
         });
 
-        document.getElementById('postButton').addEventListener('click', function () {
-            const postUrl = 'https://forms.gle/j1VEZQu6WpLw2jPg7';
-            window.location.href = postUrl;
+        document.getElementById('fetchDataButton').addEventListener('click', function () {
+            fetchData();
         });
 
         function fetchData() {
@@ -111,15 +165,14 @@
         }
 
         function parseCSV(csv) {
-            const rows = csv.split('\n').slice(1); // Ignore the header
-            const shuffledRows = shuffleArray(rows); // Shuffle rows
+            const rows = csv.split('\n').slice(1);
+            const shuffledRows = shuffleArray(rows);
             const itemList = document.getElementById('itemList');
-            itemList.innerHTML = ''; // Clear previous items
+            itemList.innerHTML = '';
 
             shuffledRows.forEach(row => {
                 const columns = row.split(',');
-
-                if (columns.length < 2) return; // Ignore rows with incomplete data
+                if (columns.length < 2) return;
 
                 const item = document.createElement('div');
                 item.classList.add('item');
@@ -144,10 +197,4 @@
         window.addEventListener('load', fetchData);
     </script>
 </body>
-<h5>Version 1.01 - Mobile</h5>
-<h3>Rules:</h3>
-<h5>1. Anonymous Forever</h5>
-<h5>2. Free forever</h5>
-<h5>3. You can't delete posts 😈</h5>
-<h7>Communities update is coming soon</h7>
 </html>
