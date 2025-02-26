@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>goule</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet">
+    <title>goulesocial</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 
     <!-- Mobile Redirect Script -->
     <script>
@@ -15,121 +18,539 @@
     </script>
 
     <style>
+        :root {
+            --bg-primary: #0f111a;
+            --bg-secondary: #1a1c25;
+            --accent-primary: #6272a4;
+            --accent-secondary: #50fa7b;
+            --text-primary: #f8f8f2;
+            --text-secondary: #b9bdcf;
+            --error: #ff5555;
+            --success: #50fa7b;
+            --warning: #ffb86c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            background-color: #72b7fc;
-            color: #343a40;
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        header {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--accent-primary);
+            text-align: center;
+            position: relative;
+        }
+
+        .brand-container {
+            display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            margin-right: 1rem;
+            background-color: var(--accent-primary);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--bg-primary);
+        }
+
+        .logo-placeholder {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: var(--accent-secondary);
+            letter-spacing: -1px;
+            font-size: 2rem;
+        }
+
+        .tagline {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 300;
+        }
+
+        .version-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--accent-primary);
+            color: var(--bg-primary);
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+        }
+
+        main {
+            flex: 1;
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .post-form {
+            background-color: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--accent-primary);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .post-input {
+            padding: 0.75rem;
+            border: 1px solid var(--accent-primary);
+            border-radius: 4px;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'JetBrains Mono', monospace;
+            width: 100%;
+            resize: none;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .post-input:focus {
+            border-color: var(--accent-secondary);
+        }
+
+        .post-input::placeholder {
+            color: var(--text-secondary);
+            opacity: 0.6;
+        }
+
+        .button-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 1rem;
+        }
+
+        .button {
+            padding: 0.6rem 1.2rem;
+            background-color: var(--accent-primary);
+            color: var(--text-primary);
+            border: none;
+            border-radius: 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.3s;
+        }
+
+        .button:hover {
+            background-color: var(--accent-secondary);
+            color: var(--bg-primary);
+            transform: translateY(-2px);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .button.post-button {
+            background-color: var(--accent-secondary);
+            color: var(--bg-primary);
+            font-weight: 500;
+        }
+
+        .button.post-button:hover {
+            opacity: 0.9;
+        }
+
+        .reload-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--accent-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .item-list {
+            border-radius: 8px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--accent-primary);
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .item {
+            padding: 1.5rem;
+            border-bottom: 1px solid rgba(98, 114, 164, 0.2);
+            transition: all 0.3s;
+        }
+
+        .item:last-child {
+            border-bottom: none;
+        }
+
+        .item:hover {
+            background-color: rgba(98, 114, 164, 0.1);
+        }
+
+        .item-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .anonymous-icon {
+            width: 30px;
+            height: 30px;
+            background-color: var(--accent-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 0.75rem;
+            font-size: 0.7rem;
+            color: var(--bg-primary);
+        }
+
+        .timestamp {
+            color: var(--text-secondary);
+            font-size: 0.75rem;
+        }
+
+        .post-content {
+            padding-left: 2.75rem;
+            word-break: break-word;
+            line-height: 1.5;
+        }
+
+        .empty-state {
+            padding: 3rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        footer {
+            background-color: var(--bg-secondary);
+            padding: 1.5rem;
+            border-top: 1px solid var(--accent-primary);
             text-align: center;
         }
-        header {
-            margin-bottom: 20px;
+
+        .rules-container {
+            margin-bottom: 1.5rem;
         }
-        img.logo {
-            width: 150px;
-            border-radius: 8px;
+
+        .rules-title {
+            color: var(--accent-secondary);
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
         }
-        h1 {
-            font-weight: 500;
-            color: #212529;
-        }
-        .button-container {
-            margin-bottom: 20px;
-        }
-        .button {
-            padding: 12px 24px;
-            background-color: #007bff;
-            color: #fff;
-            border: none;
-            border-radius: 6px;
-            font-size: 18px;
-            cursor: pointer;
-            margin: 5px;
-            transition: background-color 0.3s, transform 0.2s;
-        }
-        .button:hover {
-            background-color: #0056b3;
-        }
-        .button:active {
-            transform: scale(0.98);
-        }
-        .item-list {
-            max-height: 600px;
-            overflow-y: auto;
-            border-radius: 12px;
-            padding: 20px;
-            margin: 0 auto;
-            width: 90%;
-            max-width: 900px;
-            background-color: #ffffff;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-        .item {
+
+        .rules-list {
+            list-style: none;
             display: flex;
             flex-direction: column;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 8px;
-            border: 1px solid #dee2e6;
-            transition: transform 0.2s;
+            gap: 0.75rem;
         }
-        .item:hover {
-            transform: scale(1.02);
-        }
-        .item-details {
+
+        .rule-item {
             display: flex;
-            flex-direction: column;
-            gap: 8px;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
-        .item-details strong {
-            font-weight: 500;
-        }
-        .post-form {
+
+        .coming-soon {
+            margin-top: 1.5rem;
+            padding: 0.75rem;
+            background-color: rgba(98, 114, 164, 0.2);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            color: var(--warning);
             display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin-bottom: 20px;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
         }
-        .post-input {
-            padding: 10px;
-            border: 1px solid #dee2e6;
-            border-radius: 6px;
-            width: 100%;
-            max-width: 600px;
-            font-size: 16px;
+
+        /* Spinner Animation */
+        .spinner {
+            width: 18px;
+            height: 18px;
+            border: 3px solid transparent;
+            border-top-color: var(--text-primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+
+        .loading .spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--success);
+            color: var(--bg-primary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toast.error {
+            background-color: var(--error);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 600px) {
+            header {
+                padding: 1rem;
+            }
+
+            main {
+                padding: 1rem 0.5rem;
+            }
+
+            .post-form, .item-list {
+                border-radius: 0;
+            }
+
+            .button-row {
+                justify-content: stretch;
+            }
+
+            .button {
+                flex: 1;
+                justify-content: center;
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <img src="logo.png" alt="goule Logo" class="logo">
-        <h1>goulesocial</h1>
-        <h5>An anonymous social media that resets every day</h5>
+        <span class="version-badge">v1.01</span>
+        <div class="brand-container">
+            <div class="logo">
+                <div class="logo-placeholder">G</div>
+            </div>
+            <h1>goulesocial</h1>
+        </div>
+        <p class="tagline">An anonymous social media that resets every day</p>
     </header>
     
-    <div class="post-form">
-        <input type="text" id="postInput" class="post-input" placeholder="Type your post here..." />
-        <button class="button" id="postButton">Post</button>
+    <main>
+        <form class="post-form" id="postForm">
+            <textarea id="postInput" class="post-input" placeholder="Share your thoughts anonymously..." rows="3"></textarea>
+            <div class="button-row">
+                <button type="submit" class="button post-button" id="postButton">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Post</span>
+                    <div class="spinner"></div>
+                </button>
+            </div>
+        </form>
+        
+        <div class="reload-container">
+            <h2 class="section-title">
+                <i class="fas fa-comment-dots"></i>
+                <span>Anonymous Posts</span>
+            </h2>
+            <button class="button" id="fetchDataButton">
+                <i class="fas fa-sync-alt"></i>
+                <span>Refresh</span>
+                <div class="spinner"></div>
+            </button>
+        </div>
+        
+        <div class="item-list" id="itemList">
+            <div class="empty-state">
+                <p>Loading posts...</p>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="rules-container">
+            <h3 class="rules-title">Community Rules</h3>
+            <ul class="rules-list">
+                <li class="rule-item">
+                    <i class="fas fa-user-secret"></i>
+                    <span>Anonymous Forever</span>
+                </li>
+                <li class="rule-item">
+                    <i class="fas fa-coins"></i>
+                    <span>Free forever</span>
+                </li>
+                <li class="rule-item">
+                    <i class="fas fa-skull"></i>
+                    <span>You can't delete posts 😈</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="coming-soon">
+            <i class="fas fa-rocket pulse"></i>
+            <span>Communities update coming soon</span>
+        </div>
+    </footer>
+
+    <div class="toast" id="toast">
+        <i class="fas fa-check-circle"></i>
+        <span id="toastMessage">Post submitted successfully!</span>
     </div>
-    
-    <div class="button-container">
-        <button class="button" id="fetchDataButton">Reload</button>
-    </div>
-    <div class="item-list" id="itemList"></div>
 
     <script>
-        document.getElementById('fetchDataButton').addEventListener('click', function () {
-            fetchData();
-        });
-
-        document.getElementById('postButton').addEventListener('click', function () {
-            const postContent = document.getElementById('postInput').value;
+        // DOM Elements
+        const postForm = document.getElementById('postForm');
+        const postInput = document.getElementById('postInput');
+        const postButton = document.getElementById('postButton');
+        const fetchDataButton = document.getElementById('fetchDataButton');
+        const itemList = document.getElementById('itemList');
+        const toast = document.getElementById('toast');
+        
+        // Toast notification
+        function showToast(message, isError = false) {
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+            
+            if (isError) {
+                toast.classList.add('error');
+            } else {
+                toast.classList.remove('error');
+            }
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Generate a random anonymous ID for posts
+        function generateAnonymousId() {
+            return Math.floor(Math.random() * 9000) + 1000; // 4-digit number
+        }
+        
+        // Format timestamp
+        function formatTimestamp(timestamp) {
+            const date = new Date(timestamp);
+            const now = new Date();
+            
+            // Check if it's today
+            if (date.toDateString() === now.toDateString()) {
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                return `Today at ${hours}:${minutes}`;
+            }
+            
+            // Yesterday
+            const yesterday = new Date(now);
+            yesterday.setDate(now.getDate() - 1);
+            if (date.toDateString() === yesterday.toDateString()) {
+                const hours = date.getHours().toString().padStart(2, '0');
+                const minutes = date.getMinutes().toString().padStart(2, '0');
+                return `Yesterday at ${hours}:${minutes}`;
+            }
+            
+            // Other days
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const hours = date.getHours().toString().padStart(2, '0');
+            const minutes = date.getMinutes().toString().padStart(2, '0');
+            
+            return `${day}/${month} at ${hours}:${minutes}`;
+        }
+        
+        // Submit post
+        postForm.addEventListener('submit', function (e) {
+            e.preventDefault();
+            
+            const postContent = postInput.value.trim();
+            
+            if (!postContent) {
+                showToast('Post cannot be empty!', true);
+                return;
+            }
+            
+            // Show loading state
+            postButton.classList.add('loading');
+            
             const timestamp = new Date().toISOString(); // Get current time in ISO format
 
             // Prepare the JSON payload
@@ -138,7 +559,7 @@
                 post: postContent
             };
 
-            // Send the JSON payload to the new webhook URL
+            // Send the JSON payload to the webhook URL
             fetch('https://cloud.activepieces.com/api/v1/webhooks/ECae0FhhT0t3ALz7gtK0z', {
                 method: 'POST',
                 headers: {
@@ -147,64 +568,155 @@
                 body: JSON.stringify(jsonPayload)
             })
             .then(response => {
+                postButton.classList.remove('loading');
+                
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
+                
                 // Clear the input field after successful post
-                document.getElementById('postInput').value = '';
+                postInput.value = '';
+                showToast('Post submitted successfully!');
                 fetchData(); // Reload the data after posting
             })
-            .catch(error => console.error('Error sending the post:', error));
+            .catch(error => {
+                postButton.classList.remove('loading');
+                console.error('Error sending the post:', error);
+                showToast('Failed to submit post. Try again later.', true);
+            });
+        });
+
+        // Fetch data
+        fetchDataButton.addEventListener('click', function () {
+            fetchDataButton.classList.add('loading');
+            fetchData();
         });
 
         function fetchData() {
+            fetchDataButton.classList.add('loading');
+            itemList.innerHTML = '<div class="empty-state"><p>Loading posts...</p></div>';
+            
             const csvUrl = 'https://docs.google.com/spreadsheets/d/1Fbd-9UCGYKVuA2usd9JiPBXRq4L6CaT0__Cj_8uZFw8/pub?output=csv';
+            
             fetch(csvUrl)
-                .then(response => response.text())
-                .then(data => parseCSV(data))
-                .catch(error => console.error('Error fetching the CSV:', error));
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.text();
+                })
+                .then(data => {
+                    parseCSV(data);
+                    fetchDataButton.classList.remove('loading');
+                })
+                .catch(error => {
+                    console.error('Error fetching the CSV:', error);
+                    fetchDataButton.classList.remove('loading');
+                    itemList.innerHTML = '<div class="empty-state"><p>Failed to load posts. Try again later.</p></div>';
+                    showToast('Failed to load posts. Try again later.', true);
+                });
         }
 
         function parseCSV(csv) {
-            const rows = csv.split('\n').slice(1); // Ignore the header
-            const shuffledRows = shuffleArray(rows); // Shuffle rows
-            const itemList = document.getElementById('itemList');
-            itemList.innerHTML = ''; // Clear previous items
+            const rows = csv.split('\n');
+            
+            // Check if there's data (at least header and one row)
+            if (rows.length <= 1 || (rows.length === 2 && !rows[1].trim())) {
+                itemList.innerHTML = '<div class="empty-state"><p>No posts yet. Be the first one!</p></div>';
+                return;
+            }
+            
+            // Skip header
+            const dataRows = rows.slice(1).filter(row => row.trim() !== '');
+            
+            // Shuffle rows
+            const shuffledRows = shuffleArray(dataRows);
+            
+            // Clear list
+            itemList.innerHTML = '';
+            
+            // Check if no valid rows
+            if (shuffledRows.length === 0) {
+                itemList.innerHTML = '<div class="empty-state"><p>No posts yet. Be the first one!</p></div>';
+                return;
+            }
 
+            // Process each row
             shuffledRows.forEach(row => {
-                const columns = row.split(',');
-
+                // Split by comma, but handle commas within quotes
+                const columns = parseCSVRow(row);
+                
                 if (columns.length < 2) return; // Ignore rows with incomplete data
-
+                
+                const timestamp = columns[0];
+                const content = columns[1];
+                const anonymousId = generateAnonymousId();
+                
                 const item = document.createElement('div');
                 item.classList.add('item');
+                
+                const formattedTimestamp = formatTimestamp(timestamp);
+                
                 item.innerHTML = `
-                    <div class="item-details">
-                        <strong>Timestamp:</strong> ${columns[0]}<br>
-                        <strong>Post:</strong> ${columns[1]}
+                    <div class="item-header">
+                        <div class="anonymous-icon">
+                            <i class="fas fa-user-secret"></i>
+                        </div>
+                        <div class="timestamp">${formattedTimestamp}</div>
                     </div>
+                    <div class="post-content">${escapeHTML(content)}</div>
                 `;
+                
                 itemList.appendChild(item);
             });
+        }
+        
+        // Helper to parse CSV rows properly (handling commas in quotes)
+        function parseCSVRow(text) {
+            const result = [];
+            let current = '';
+            let inQuotes = false;
+            
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                
+                if (char === '"') {
+                    inQuotes = !inQuotes;
+                } else if (char === ',' && !inQuotes) {
+                    result.push(current);
+                    current = '';
+                } else {
+                    current += char;
+                }
+            }
+            
+            // Add the last field
+            result.push(current);
+            return result;
+        }
+        
+        // Escape HTML to prevent XSS
+        function escapeHTML(str) {
+            return str
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
         }
 
         // Shuffle array function
         function shuffleArray(array) {
-            for (let i = array.length - 1; i > 0; i--) {
+            const newArray = [...array]; // Create a copy to avoid mutating the original
+            for (let i = newArray.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [array[i], array[j]] = [array[j], array[i]];
+                [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
             }
-            return array;
+            return newArray;
         }
 
         // Auto-fetch data on page load
         window.addEventListener('load', fetchData);
     </script>
 </body>
-<h5>Version 1.01</h5>
-<h3>Rules:</h3>
-<h5>1. Anonymous Forever</h5>
-<h5>2. Free forever</h5>
-<h5>3. You can't delete posts 😈</h5>
-<h7>Communities update is coming soon</h7>
 </html>
